@@ -34,6 +34,15 @@ namespace InMemoryApp.Web.Controllers
             // 10 saniye içerisinde erişirsem ömrü artacak
             options.SlidingExpiration = TimeSpan.FromSeconds(10);
 
+            // bu data benim için önemli
+            options.Priority = CacheItemPriority.High;
+
+            // bu data önemsiz sil
+            //options.Priority = CacheItemPriority.Low;
+
+            // asla silme, ama memory dolarsa exception fırlatır
+            // options.Priority = CacheItemPriority.NeverRemove;
+
 
             _memoryCache.Set<string>("zaman", DateTime.Now.ToString(), options);
 
