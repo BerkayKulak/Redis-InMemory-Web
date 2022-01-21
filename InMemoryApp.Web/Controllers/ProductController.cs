@@ -1,4 +1,5 @@
 ﻿using System;
+using InMemoryApp.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -32,7 +33,7 @@ namespace InMemoryApp.Web.Controllers
 
 
             // 10 saniye içerisinde erişirsem ömrü artacak
-            options.SlidingExpiration = TimeSpan.FromSeconds(10);
+            //options.SlidingExpiration = TimeSpan.FromSeconds(10);
 
             // bu data benim için önemli
             options.Priority = CacheItemPriority.High;
@@ -43,8 +44,16 @@ namespace InMemoryApp.Web.Controllers
             // asla silme, ama memory dolarsa exception fırlatır
             // options.Priority = CacheItemPriority.NeverRemove;
 
+            options.RegisterPostEvictionCallback((key, value, reason, state) =>
+            {
+                _memoryCache.Set("callback", $"{key}->{value} => sebep:{reason}");
+            });
 
             _memoryCache.Set<string>("zaman", DateTime.Now.ToString(), options);
+
+            Product product = new Product() {Id = 1, Name = "Kalem", Price = 200};
+
+            _memoryCache.Set<Product>("product1", product);
 
             return View();
         }
@@ -57,8 +66,12 @@ namespace InMemoryApp.Web.Controllers
             //});
 
             _memoryCache.TryGetValue("zaman", out string zamancache);
+            _memoryCache.TryGetValue("callback", out string callback);
 
             ViewBag.zaman = zamancache;
+            ViewBag.callback = callback;
+
+            ViewBag.product = _memoryCache.Get<Product>("product1");
 
             return View();
         }
