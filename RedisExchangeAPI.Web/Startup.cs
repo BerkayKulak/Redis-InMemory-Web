@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RedisExchangeAPI.Web.Services;
 
 namespace RedisExchangeAPI.Web
 {
@@ -23,11 +24,12 @@ namespace RedisExchangeAPI.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<RedisService>();
             services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,RedisService redisService)
         {
             if (env.IsDevelopment())
             {
@@ -45,7 +47,7 @@ namespace RedisExchangeAPI.Web
             app.UseRouting();
 
             app.UseAuthorization();
-
+            redisService.Connect();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

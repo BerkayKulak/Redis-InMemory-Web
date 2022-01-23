@@ -73,7 +73,6 @@ namespace IDistributedCacheRedisApp.Web.Controllers
 
             return File(resimByte, "image/jpg");
 
-
         }
 
         public IActionResult ImageCache()
@@ -83,7 +82,6 @@ namespace IDistributedCacheRedisApp.Web.Controllers
             byte[] imageByte = System.IO.File.ReadAllBytes(path);
 
             _distributedCache.Set("resim",imageByte);
-
 
             return View();
         }
