@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using IDistributedCacheRedisApp.Web.Models;
@@ -55,12 +56,34 @@ namespace IDistributedCacheRedisApp.Web.Controllers
             Product product = JsonConvert.DeserializeObject<Product>(jsonProduct);
 
             ViewBag.name = product;
+
             return View();
         }
 
         public IActionResult Remove()
         {
             _distributedCache.Remove("name");
+
+            return View();
+        }
+
+        public IActionResult ImageUrl()
+        {
+            byte[] resimByte = _distributedCache.Get("resim");
+
+            return File(resimByte, "image/jpg");
+
+
+        }
+
+        public IActionResult ImageCache()
+        {
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/p7zz5dxZ.jpg");
+
+            byte[] imageByte = System.IO.File.ReadAllBytes(path);
+
+            _distributedCache.Set("resim",imageByte);
+
 
             return View();
         }
