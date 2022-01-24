@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RedisExchangeAPI.Web.Services;
 using StackExchange.Redis;
@@ -43,6 +44,13 @@ namespace RedisExchangeAPI.Web.Controllers
             db.KeyExpire(listKey, DateTime.Now.AddMinutes(5));
 
             db.SetAdd(listKey, name);
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> DeleteItem(string name)
+        {
+            await db.SetRemoveAsync(listKey, name);
 
             return RedirectToAction("Index");
         }
